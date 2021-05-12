@@ -135,6 +135,9 @@ def solve(sudoku=sudoku):
         return
   print_sudoku(sudoku)
 
+def run():
+  solve(sudoku)
+
 # the main function
 if __name__ == "__main__":
   solve(sudoku)
