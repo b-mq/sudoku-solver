@@ -31,6 +31,8 @@ sudoku = [  5, 3, 0, 0, 7, 0, 0, 0, 0,
             0, 0, 0, 4, 1, 9, 0, 0, 5,
             0, 0, 0, 0, 8, 0, 0, 7, 9  ]
 
+# contains all possible solutions to given sudoku puzzle
+solved_sudokus = []
 
 # returns the row and column number of given index
 def get_row_column_from_index(index):
@@ -133,11 +135,13 @@ def solve(sudoku=sudoku):
             solve(sudoku=sudoku)
             sudoku[index] = 0
         return
-  print_sudoku(sudoku)
-
-def run():
-  solve(sudoku)
+  solved_sudokus.append(sudoku)
 
 # the main function
 if __name__ == "__main__":
   solve(sudoku)
+  count = len(solved_sudokus)
+  multiple = count > 1
+  print(f"There {'are' if multiple else 'is'} {count} soluiton{'s' if multiple else ''}")
+  for s in solved_sudokus:
+    print_sudoku(s)
