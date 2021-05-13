@@ -48,24 +48,24 @@ def get_index_from_row_column(row, column):
 def get_row_index(index):
   return index // COUNT_NUMBERS
 
-# returns the column number index at index of sudoku
+# returns the column number index at index of sudoku    
 def get_column_index(index):
   return int(index % COUNT_NUMBERS)
 
 # returns a horizontal subset of the sudoku at index position (row)
-def get_horizontal_slice_by(index, sudoku=sudoku):
+def get_horizontal_slice_by(index, grid=sudoku):
   row_index = get_row_index(index) * COUNT_NUMBERS
-  values = sudoku[row_index : row_index + COUNT_NUMBERS]
+  values = grid[row_index : row_index + COUNT_NUMBERS]
   return values
 
 # returns a vertical subset of the sudoku at index position (column)
-def get_vertical_slice_by(index, sudoku=sudoku):
+def get_vertical_slice_by(index, grid=sudoku):
   col = get_column_index(index)
-  values = [sudoku[x * COUNT_NUMBERS + col] for x in range(COUNT_NUMBERS)]
+  values = [grid[x * COUNT_NUMBERS + col] for x in range(COUNT_NUMBERS)]
   return values
 
 # returns a 3x3 subset of the sudoku at index position
-def get_3x3_slice_by(index, sudoku=sudoku):
+def get_3x3_slice_by(index, grid=sudoku):
   col_start = (get_column_index(index) // 3) * 3
   row_start = (get_row_index(index) // 3) * 3
   start = row_start * COUNT_NUMBERS + col_start
@@ -73,29 +73,29 @@ def get_3x3_slice_by(index, sudoku=sudoku):
   for row in range(3):
     for col in range(3):
       i = start + (COUNT_NUMBERS * row) + col
-      values.append(sudoku[i])
+      values.append(grid[i])
   return values
 
-# def is_possible(row, column, number, sudoku=sudoku):
+# def is_possible(row, column, number, grid=sudoku):
   # check row
   for i in range(9):
-    if sudoku[row * COUNT_NUMBERS + i] == number:
+    if grid[row * COUNT_NUMBERS + i] == number:
       return False
   # check column
   for i in range(9):
-    if sudoku[column + COUNT_NUMBERS * i] == number:
+    if grid[column + COUNT_NUMBERS * i] == number:
       return False
   # check 3x3 area
   col0 = (column//3)*3
   row0 = (row//3)*3
   for r in range(3):
     for c in range(3):
-      if sudoku[(row0 + r) * COUNT_NUMBERS + (col0 + c)] == number:
+      if grid[(row0 + r) * COUNT_NUMBERS + (col0 + c)] == number:
         return False
   return True
 
 # checks if it's possible to put given number into sudoku at given index
-def is_possible(index, number, sudoku=sudoku):
+def is_possible(index, number, grid=sudoku):
   if number in get_horizontal_slice_by(index, sudoku):
     return False
   elif number in get_vertical_slice_by(index, sudoku):
@@ -106,8 +106,8 @@ def is_possible(index, number, sudoku=sudoku):
     return True
 
 # print sudoku visually as 9x9 grid
-def print_sudoku(sudoku=sudoku, ending=""):
-  for i,value in enumerate(sudoku):
+def print_sudoku(grid=sudoku, ending=""):
+  for i,value in enumerate(grid):
     val = f"{value:<2}"
     # horizontal separator
     if i!=0 and not (i/9)%3:
@@ -124,24 +124,29 @@ def print_sudoku(sudoku=sudoku, ending=""):
   print(f"\n{ending}")
 
 # solve sudoku puzzle via backtracking and recursion
-def solve(sudoku=sudoku):
+def solve(grid=sudoku):
   for row in range(COUNT_NUMBERS):
     for column in range(COUNT_NUMBERS):
       index = get_index_from_row_column(row, column)
-      if sudoku[index] == 0:
+      if grid[index] == 0:
         for n in range(1, 10):
-          if is_possible(index=index, number=n, sudoku=sudoku):
-            sudoku[index] = n
-            solve(sudoku=sudoku)
-            sudoku[index] = 0
+          if is_possible(index=index, number=n, grid=sudoku):
+            grid[index] = n
+            solve(grid=sudoku)
+            grid[index] = 0
         return
-  solved_sudokus.append(sudoku)
+  solved_sudokus.append(grid.copy())
 
-# the main function
-if __name__ == "__main__":
+# main function, will solve sudoku puzzle
+def main():
   solve(sudoku)
   count = len(solved_sudokus)
   multiple = count > 1
   print(f"There {'are' if multiple else 'is'} {count} soluiton{'s' if multiple else ''}")
   for s in solved_sudokus:
+    print(f"\n{count}. solution:")
     print_sudoku(s)
+
+# running main function
+if __name__ == "__main__":
+  main()
